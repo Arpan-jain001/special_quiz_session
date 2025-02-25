@@ -1,0 +1,27 @@
+* {
+    font-family: "Bitter", serif;
+}
+
+.mycontainer {
+    color: white;
+    width: 300px;
+    height: 200px;
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3IhFqab3xZyF-YxRPWM7Fu4OQStuj2FBwZg&s');
+    background-position: center;
+    background-size: cover;
+    border-radius: 19px;
+    text-align: center;
+    padding-top: 40px;
+}
+
+.wrap {
+    margin: auto;
+    width: 300px;
+}
+
+.bc {
+    background-color: rgb(139, 103, 182);
+}
+.header{
+    align-items: center;
+}
