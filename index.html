@@ -1,36 +1,817 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scale=no">
-    <title>Quiz app</title>
-    <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timed Fullscreen Quiz Exam</title>
+    <!-- Using a professional font for better aesthetics -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles for a clean, full-screen centered look */
+        :root {
+            --primary-color: #4f46e5; /* Indigo */
+            --secondary-color: #e0e7ff; /* Light Indigo */
+            --correct-color: #10b981; /* Emerald */
+            --wrong-color: #ef4444; /* Red */
+            --bg-color: #f3f4f6; /* Gray 100 */
+            --card-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            padding: 2rem;
+            background: var(--card-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* --- Fullscreen Prompt Screen Styles --- */
+        #fullscreen-prompt {
+            padding: 40px;
+        }
+        
+        .prompt-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .prompt-message {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 2rem;
+        }
+
+        /* --- Quiz Container Styles --- */
+        #quiz-container {
+            display: none; /* Hidden by default, shown when fullscreen */
+            text-align: left;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        
+        .question-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        /* Timer Display Style */
+        #timer-display {
+            padding: 0.5rem 1rem;
+            background-color: #fee2e2; /* Light Red background */
+            border-radius: 6px;
+            font-weight: 700;
+            color: #b91c1c; /* Dark Red text */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* --- Option Styles (Radio Buttons) --- */
+        .option-label {
+            display: block;
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            font-weight: 500;
+            color: #1f2937;
+            /* कोड ऑप्शंस के लिए बेहतर फ़ॉन्ट */
+            font-family: 'Consolas', 'Courier New', monospace; 
+        }
+
+        .option-label:hover {
+            background-color: #c7d2fe;
+            border-color: var(--primary-color);
+        }
+
+        input[type="radio"] {
+            display: none; /* Hide the default radio button */
+        }
+
+        input[type="radio"]:checked + .option-label {
+            background-color: var(--primary-color);
+            color: var(--card-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+        }
+
+        /* --- Button Styles --- */
+        .button-group {
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+            gap: 1rem; /* Spacing between buttons */
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #start-btn, #next-btn, #finish-btn {
+            background-color: var(--primary-color);
+            color: var(--card-color);
+        }
+        
+        #start-btn:hover, #next-btn:hover, #finish-btn:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        /* Reset Button Specific Style */
+        .reset-btn {
+            background-color: #6b7280; /* Gray */
+            color: var(--card-color);
+        }
+        .reset-btn:hover {
+            background-color: #4b5563;
+        }
+
+
+        #start-btn:active, #next-btn:active, #finish-btn:active, .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        #next-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* --- Results and Review Screen Styles --- */
+        #results-screen {
+            display: none;
+            padding-top: 20px;
+            text-align: left;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .review-question-block {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            background-color: #f9fafb;
+        }
+
+        .review-question-text {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1f2937;
+        }
+
+        .review-info p {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            /* रिव्यू उत्तरों के लिए भी बेहतर कोड फ़ॉन्ट */
+            font-family: 'Consolas', 'Courier New', monospace; 
+        }
+
+        .correct-answer {
+            background-color: var(--correct-color);
+            color: var(--card-color);
+            border: 1px solid var(--correct-color);
+        }
+
+        .user-answer {
+            border: 2px solid var(--wrong-color);
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Hide message if no answer was given */
+        .user-answer.none {
+            border: 1px solid #9ca3af;
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* --- Copyright Footer Style --- */
+        .copyright-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.85rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        /* Media Query for responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            .prompt-title {
+                font-size: 1.5rem;
+            }
+            .question-text {
+                font-size: 1.2rem;
+            }
+            .score-display {
+                font-size: 1.5rem;
+            }
+            .button-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
 </head>
+<body>
 
-<body style="background-color: pink; align-items:center">
-    <font size="44">
-    <marquee scrollamount="20"bgcolor="transparent black" direction="slide">Welcome to AJ Quiz Night This Webpage will be open on 3 June 2025 </marquee></font>
-    <center><header class="header">
-        <h1><p>Quiz Night</p></h1>
-    </header>
+<div class="container">
+    
+    <!-- 1. Fullscreen Requirement Prompt -->
+    <div id="fullscreen-prompt">
+        <h1 class="prompt-title">Fullscreen Quiz Mode (50 Minutes)</h1>
+        <p class="prompt-message">
+            To maintain exam integrity, this quiz must be taken in **full-screen mode**. 
+            It must be completed within **50 minutes**. If the timer runs out, the exam will automatically submit.
+        </p>
+        <button id="start-btn" class="btn" id="start-btn">Start Quiz in Fullscreen</button>
+    </div>
 
-    <h3>Don't Worry! This Webpage will be open on Saturday 3 June 2025 to attempt quiz</h3>
-    <img src="offer_letter).png" alt="invitation card"></center>
+    <!-- 2. Quiz Content Area (Hidden until fullscreen is activated) -->
+    <div id="quiz-container">
+        <div class="question-header">
+            <span class="question-number">Question 1/30</span>
+            <span id="timer-display">Time Left: 50:00</span>
+        </div>
+
+        <div id="question-area">
+            <!-- Question text and options will be injected here -->
+        </div>
+
+        <div class="button-group">
+            <!-- Reset Button -->
+            <button id="reset-btn" class="btn reset-btn" onclick="resetSelection()">Reset Selection</button>
+            
+            <button id="next-btn" class="btn" onclick="saveAndGoNext()" disabled>Save & Next</button>
+            <button id="finish-btn" class="btn" onclick="submitQuiz()" style="display:none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <!-- 3. Results and Review Screen (Hidden until the quiz is submitted) -->
+    <div id="results-screen">
+        <h1 class="prompt-title" id="results-title">Exam Results</h1>
+        <p class="score-display">Your Score: <span id="final-score">0</span> / <span id="total-questions">0</span></p>
+        
+        <h2 style="font-size: 1.2rem; margin-bottom: 1rem; color: #1f2937;">Detailed Review</h2>
+        <div id="review-area">
+            <!-- Review blocks will be injected here -->
+        </div>
+    </div>
+
+    <!-- 4. Copyright Footer -->
+    <div class="copyright-footer">
+        Copyright © 2025 Arpan Jain
+    </div>
+
+</div>
+
+<script>
+    // --- Configuration and Data ---
+    const EXAM_DURATION = 50 * 60; // 50 minutes in seconds (Updated for 30 questions)
+
+    const questions = [
+        {
+            question: "Which of the following best describes the role of a front-end developer?",
+            options: ["Manages databases", "Designs UI with HTML, CSS, JS", "Configures web servers", "Implements APIs"],
+            answer: "Designs UI with HTML, CSS, JS"
+        },
+        {
+            question: "What does HTML stand for?",
+            options: ["HyperText Markup Language", "HighText Machine Language", "Hyper Transfer Markup Language", "Hyper Tool Multi Language"],
+            answer: "HyperText Markup Language"
+        },
+        {
+            question: "Which tag is used to create a hyperlink in HTML?",
+            options: ["<link>", "<href>", "<a>", "<hyper>"],
+            answer: "<a>"
+        },
+        {
+            question: "Which HTML element is used to display the largest heading?",
+            options: ["<h6>", "<h1>", "<header>", "<p>"],
+            answer: "<h1>"
+        },
+        {
+            question: "Semantic HTML improves:",
+            options: ["Styling performance", "Code readability and accessibility", "File size", "Image rendering"],
+            answer: "Code readability and accessibility"
+        },
+        {
+            question: "Which CSS property is used to change text color?",
+            options: ["font-style", "text-color", "color", "background-color"],
+            answer: "color"
+        },
+        {
+            question: "The default position property of an element in CSS is:",
+            options: ["absolute", "relative", "static", "fixed"],
+            answer: "static"
+        },
+        {
+            question: "Which CSS unit is relative to the root element’s font size?",
+            options: ["px", "em", "rem", "%"],
+            answer: "rem"
+        },
+        {
+            question: "The CSS box model does NOT include:",
+            options: ["Content", "Margin", "Border", "Layer"],
+            answer: "Layer"
+        },
+        {
+            question: "Which property is used to control element stacking order?",
+            options: ["z-index", "order", "stack", "priority"],
+            answer: "z-index"
+        },
+        {
+            question: "Flexbox property to distribute extra space between items:",
+            options: ["justify-content", "align-items", "flex-wrap", "display"],
+            answer: "justify-content"
+        },
+        {
+            question: "In Grid layout, which property defines column sizes?",
+            options: ["grid-template-rows", "grid-template-columns", "grid-area", "grid-gap"],
+            answer: "grid-template-columns"
+        },
+        {
+            question: "CSS animation uses which property for keyframes?",
+            options: ["@style", "@animation", "@keyframes", "@frames"],
+            answer: "@keyframes"
+        },
+        {
+            question: "Which framework is primarily CSS-based?",
+            options: ["React", "Bootstrap", "Django", "Node.js"],
+            answer: "Bootstrap"
+        },
+        {
+            question: "Which tag represents semantic HTML?",
+            options: ["<div>", "<span>", "<article>", "<b>"],
+            answer: "<article>"
+        },
+        {
+            question: "To link CSS with HTML, which tag is correct?",
+            options: ["<style href=\"style.css\">", "<css link=\"style.css\">", "<link rel=\"stylesheet\" href=\"style.css\">", "<stylesheet link=\"style.css\">"],
+            answer: "<link rel=\"stylesheet\" href=\"style.css\">"
+        },
+        {
+            question: "Which property makes elements overlap?",
+            options: ["float", "position: absolute", "margin", "padding"],
+            answer: "position: absolute"
+        },
+        {
+            question: "Which CSS property controls the space between lines of text?",
+            options: ["letter-spacing", "text-indent", "line-height", "spacing"],
+            answer: "line-height"
+        },
+        {
+            question: "Which HTML element is used for inserting an image?",
+            options: ["<img>", "<src>", "<image>", "<picture>"],
+            answer: "<img>"
+        },
+        {
+            question: "Which is true about CSS Grid vs Flexbox?",
+            options: ["Flexbox is for 2D layout", "Grid is for 1D layout", "Grid handles both rows and columns", "Flexbox is always better"],
+            answer: "Grid handles both rows and columns"
+        },
+        {
+            question: "The attribute alt in <img> is used for:",
+            options: ["File path", "Alternate text if image fails", "Styling images", "Image size"],
+            answer: "Alternate text if image fails"
+        },
+        {
+            question: "Which CSS property is NOT used in positioning?",
+            options: ["top", "right", "float", "opacity"],
+            answer: "opacity"
+        },
+        {
+            question: "CSS transform: rotate(90deg); rotates element:",
+            options: ["Vertically", "Clockwise 90 degrees", "Counterclockwise 90 degrees", "Flips upside down"],
+            answer: "Clockwise 90 degrees"
+        },
+        {
+            question: "Which CSS property creates transition effects?",
+            options: ["transition", "transform", "animation-delay", "keyframes"],
+            answer: "transition"
+        },
+        {
+            question: "CSS Grid gap between rows and columns is controlled by:",
+            options: ["margin", "grid-gap", "border-spacing", "spacing"],
+            answer: "grid-gap"
+        },
+        {
+            question: "HTML5 introduced which tag?",
+            options: ["<marquee>", "<video>", "<font>", "<blink>"],
+            answer: "<video>"
+        },
+        {
+            question: "Which CSS framework uses utility classes?",
+            options: ["Bootstrap", "Tailwind CSS", "Materialize", "Foundation"],
+            answer: "Tailwind CSS"
+        },
+        {
+            question: "In CSS, position: fixed; means element is:",
+            options: ["Relative to parent", "Relative to viewport", "Scrollable", "Hidden"],
+            answer: "Relative to viewport"
+        },
+        {
+            question: "Which HTML tag creates a table row?",
+            options: ["<row>", "<tr>", "<td>", "<table>"],
+            answer: "<tr>"
+        },
+        {
+            question: "Which meta tag is important for responsiveness?",
+            options: ["<meta charset>", "<meta name=\"viewport\">", "<meta author>", "<meta description>"],
+            answer: "<meta name=\"viewport\">"
+        }
+    ];
+
+    // --- State Variables ---
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let isQuizActive = false;
+    let timeLeft = EXAM_DURATION;
+    let timerInterval;
+
+    // --- DOM Elements ---
+    const fullscreenPrompt = document.getElementById('fullscreen-prompt');
+    const quizContainer = document.getElementById('quiz-container');
+    const questionHeader = quizContainer.querySelector('.question-header .question-number');
+    const questionArea = document.getElementById('question-area');
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    const startBtn = document.getElementById('start-btn');
+    const resultsScreen = document.getElementById('results-screen');
+    const finalScore = document.getElementById('final-score');
+    const totalQuestions = document.getElementById('total-questions');
+    const reviewArea = document.getElementById('review-area');
+    const timerDisplay = document.getElementById('timer-display');
+    const resultsTitle = document.getElementById('results-title');
 
 
+    // --- TIMER Functions ---
 
-<center>    <p>Copyright &copy; AJ001</p></center>
-        <center>
-            <font size="20">
-                <marquee scrollamount="20"bgcolor="transparent yellow" direction="slide">All the best! & Best wishes from my side Thankyou</marquee></font>
-        </center>
+    /**
+     * Updates the displayed time and handles auto-submission on timeout.
+     */
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
 
-   
+    /**
+     * Starts the countdown timer.
+     */
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+
+            if (timeLeft <= 60) {
+                // Highlight timer when less than 1 minute remains
+                timerDisplay.style.backgroundColor = '#fca5a5'; /* Reddish tone */
+            }
+
+            if (timeLeft <= 0) {
+                stopTimer();
+                isQuizActive = false; // Prevent any further interaction
+                console.log('Time is up! Submitting the quiz automatically.');
+                
+                // Submit the quiz due to timeout
+                submitQuiz(true); 
+            }
+        }, 1000);
+    }
+
+    /**
+     * Stops the countdown timer.
+     */
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
 
 
+    // --- Fullscreen and Setup Functions ---
 
+    /**
+     * Enters full screen mode.
+     */
+    function requestFullscreen() {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+            document.documentElement.msRequestFullscreen();
+        }
+    }
+
+    /**
+     * Handles the fullscreen change event (user exiting fullscreen).
+     */
+    function handleFullscreenChange() {
+        if (!document.fullscreenElement && isQuizActive) {
+            // User exited fullscreen while the quiz was active (Termination)
+            stopTimer(); // Stop the timer
+            isQuizActive = false;
+            quizContainer.style.display = 'none';
+            fullscreenPrompt.style.display = 'block';
+            startBtn.textContent = 'Quiz Terminated (Click to Restart)';
+            startBtn.onclick = () => {
+                location.reload(); // Reset state and force restart
+            };
+            document.querySelector('.prompt-title').textContent = 'QUIZ TERMINATED';
+            document.querySelector('.prompt-message').textContent = 'You must remain in full-screen mode to continue the exam. Please restart the quiz.';
+        } else if (document.fullscreenElement && !isQuizActive) {
+            // Entered fullscreen, start the quiz
+            isQuizActive = true;
+            fullscreenPrompt.style.display = 'none';
+            quizContainer.style.display = 'block';
+            renderQuestion();
+            startTimer(); // Start the timer!
+        }
+    }
+    
+    // Listen for fullscreen change events
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+
+    // Initial start button listener
+    startBtn.addEventListener('click', () => {
+        requestFullscreen();
+    });
+    
+    // Initialize timer display
+    document.addEventListener('DOMContentLoaded', updateTimerDisplay);
+
+
+    // --- Quiz Navigation and Interaction Functions ---
+
+    /**
+     * Helper function to escape HTML characters for safe display.
+     * यह फ़ंक्शन ऑप्शंस में मौजूद HTML टैग्स को सादे टेक्स्ट (plain text) के रूप में प्रदर्शित करने के लिए
+     * HTML स्पेशल कैरेक्टर्स (जैसे '<' और '>') को एस्केप करता है।
+     * @param {string} str - HTML कोड वाला स्ट्रिंग।
+     * @returns {string} एस्केप किया गया स्ट्रिंग।
+     */
+    function escapeHtml(str) {
+        if (typeof str !== 'string') return str;
+        return str.replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#039;");
+    }
+
+    /**
+     * Helper function to safely encode a string for use within an HTML attribute (like 'value').
+     * यह फ़ंक्शन विशेष रूप से डबल कोट्स को एस्केप करता है, जिससे 'value' एट्रीब्यूट टूटता नहीं है।
+     * @param {string} str - The string to encode.
+     * @returns {string} The attribute-safe string.
+     */
+    function escapeHtmlAttribute(str) {
+        if (typeof str !== 'string') return str;
+        // Double quotes are replaced with entity to prevent breaking the value="${...}" structure.
+        return str.replace(/"/g, "&quot;");
+    }
+
+
+    /**
+     * Renders the current question and its options to the DOM.
+     */
+    function renderQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            submitQuiz();
+            return;
+        }
+
+        const q = questions[currentQuestionIndex];
+        
+        // Update header
+        questionHeader.textContent = `Question ${currentQuestionIndex + 1}/${questions.length}`;
+
+        // Build question HTML
+        let html = `<p class="question-text">Q${currentQuestionIndex + 1}. ${q.question}</p>`;
+        
+        q.options.forEach((option, index) => {
+            const isChecked = userAnswers[currentQuestionIndex] === option;
+            // Display के लिए HTML टैग्स को एस्केप करें
+            const escapedOptionDisplay = escapeHtml(option); 
+            // Input value के लिए, केवल कोट्स को एस्केप करें ताकि JavaScript में सही वैल्यू मिले
+            const safeOptionValue = escapeHtmlAttribute(option);
+
+            html += `
+                <div>
+                    <!-- value में safeOptionValue का उपयोग करें -->
+                    <input type="radio" id="option-${index}" name="quiz-option" value="${safeOptionValue}" ${isChecked ? 'checked' : ''} onchange="enableNextButton()">
+                    <label for="option-${index}" class="option-label">${escapedOptionDisplay}</label>
+                </div>
+            `;
+        });
+
+        questionArea.innerHTML = html;
+
+        // Check if the current question has an existing answer to enable the button immediately
+        nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+
+        // Show Finish button on the last question, hide next
+        if (currentQuestionIndex === questions.length - 1) {
+            nextBtn.style.display = 'none';
+            finishBtn.style.display = 'block';
+        } else {
+            nextBtn.style.display = 'block';
+            finishBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * Enables the Save & Next button when an option is selected.
+     */
+    function enableNextButton() {
+        nextBtn.disabled = false;
+    }
+
+    /**
+     * Resets the selected option for the current question.
+     */
+    function resetSelection() {
+        const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+        
+        if (selectedOption) {
+            selectedOption.checked = false;
+            userAnswers[currentQuestionIndex] = null; // Clear state
+            nextBtn.disabled = true; // Disable until a new selection is made
+        }
+    }
+
+    /**
+     * Saves the current selection and moves to the next question.
+     */
+    function saveAndGoNext() {
+        // 1. Save the selected answer
+        const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+        if (selectedOption) {
+            // Note: Since we used escapeHtmlAttribute in renderQuestion, 
+            // selectedOption.value will correctly return the unescaped string (the raw answer).
+            userAnswers[currentQuestionIndex] = selectedOption.value;
+        } else {
+            console.error("No option selected, cannot proceed.");
+            return;
+        }
+
+        // 2. Move to the next question
+        currentQuestionIndex++;
+        
+        if (currentQuestionIndex < questions.length) {
+            renderQuestion();
+        } else {
+            // 3. If no more questions, submit the quiz
+            submitQuiz(false);
+        }
+    }
+
+    /**
+     * Helper function to save the last question's answer before final submission
+     */
+    function saveCurrentAnswerForSubmit() {
+        const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
+        if (selectedOption) {
+            userAnswers[currentQuestionIndex] = selectedOption.value;
+        } else if (currentQuestionIndex === questions.length - 1) {
+             // If on the last question and nothing is checked, set to null
+            userAnswers[currentQuestionIndex] = null; 
+        }
+    }
+
+
+    /**
+     * Calculates score, displays results, and shows review.
+     */
+    function submitQuiz(isTimeout) {
+        stopTimer(); // Stop the timer immediately
+
+        // Ensure the last question's answer is saved
+        saveCurrentAnswerForSubmit();
+        
+        // Hide quiz and show results screen
+        quizContainer.style.display = 'none';
+        resultsScreen.style.display = 'block';
+        
+        // Set the appropriate title based on submission type
+        if (isTimeout) {
+            resultsTitle.textContent = 'TIME OUT: Exam Submitted Automatically';
+            resultsTitle.style.color = 'var(--wrong-color)';
+        } else {
+            // Set the title for successful completion
+            resultsTitle.textContent = 'Quiz Completed Successfully';
+            resultsTitle.style.color = 'var(--primary-color)';
+        }
+
+        // Calculate Score
+        let score = 0;
+        questions.forEach((q, index) => {
+            if (userAnswers[index] === q.answer) {
+                score++;
+            }
+        });
+
+        // Display Score
+        finalScore.textContent = score;
+        totalQuestions.textContent = questions.length;
+
+        // Display Review
+        renderReview(score);
+
+        // Exit fullscreen after showing results
+        if (!isTimeout && document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+    
+    /**
+     * Generates the detailed review section.
+     */
+    function renderReview(score) {
+        let reviewHtml = '';
+
+        questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = userAnswer === q.answer;
+            const userAnswerText = userAnswer !== null ? `Your Answer: ${userAnswer}` : 'Your Answer: Not Attempted';
+            const userAnswerClass = isCorrect ? '' : (userAnswer === null ? 'none' : 'user-answer');
+
+            // Answer review में भी escaping का उपयोग करें
+            const escapedCorrectAnswer = escapeHtml(q.answer);
+            const escapedUserAnswerText = userAnswer !== null ? `Your Answer: ${escapeHtml(userAnswer)}` : 'Your Answer: Not Attempted';
+
+
+            reviewHtml += `
+                <div class="review-question-block">
+                    <p class="review-question-text">Q${index + 1}. ${q.question}</p>
+                    <div class="review-info">
+                        <p class="correct-answer">Correct Answer: ${escapedCorrectAnswer}</p>
+                        <p class="${userAnswerClass}">${escapedUserAnswerText}</p>
+                    </div>
+                </div>
+            `;
+        });
+
+        reviewArea.innerHTML = reviewHtml;
+    }
+</script>
+
+</body>
 </html>
