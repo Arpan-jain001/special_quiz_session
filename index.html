@@ -317,7 +317,7 @@
 
 <script>
     // --- Configuration and Data ---
-    const EXAM_DURATION = 50 * 60; // 50 minutes in seconds (Updated for 30 questions)
+    const EXAM_DURATION = 60 * 60; // 50 minutes in seconds (Updated for 30 questions)
 
     const questions = [
         {
@@ -923,7 +923,7 @@
     ];
 
     // --- State Variables ---
-    let currentQuestionIndex = 0;
+     let currentQuestionIndex = 0;
     let userAnswers = new Array(questions.length).fill(null);
     let isQuizActive = false;
     let timeLeft = EXAM_DURATION;
@@ -944,119 +944,69 @@
     const timerDisplay = document.getElementById('timer-display');
     const resultsTitle = document.getElementById('results-title');
 
-
     // --- TIMER Functions ---
-
-    /**
-     * Updates the displayed time and handles auto-submission on timeout.
-     */
     function updateTimerDisplay() {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
-
-    /**
-     * Starts the countdown timer.
-     */
     function startTimer() {
         if (timerInterval) clearInterval(timerInterval);
-
         timerInterval = setInterval(() => {
             timeLeft--;
             updateTimerDisplay();
-
             if (timeLeft <= 60) {
-                // Highlight timer when less than 1 minute remains
-                timerDisplay.style.backgroundColor = '#fca5a5'; /* Reddish tone */
+                timerDisplay.style.backgroundColor = '#fca5a5';
             }
-
             if (timeLeft <= 0) {
                 stopTimer();
-                isQuizActive = false; // Prevent any further interaction
-                console.log('Time is up! Submitting the quiz automatically.');
-                
-                // Submit the quiz due to timeout
-                submitQuiz(true); 
+                isQuizActive = false;
+                submitQuiz(true);
             }
         }, 1000);
     }
-
-    /**
-     * Stops the countdown timer.
-     */
     function stopTimer() {
         clearInterval(timerInterval);
     }
 
-
     // --- Fullscreen and Setup Functions ---
-
-    /**
-     * Enters full screen mode.
-     */
     function requestFullscreen() {
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+        } else if (document.documentElement.mozRequestFullScreen) {
             document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        } else if (document.documentElement.webkitRequestFullscreen) {
             document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+        } else if (document.documentElement.msRequestFullscreen) {
             document.documentElement.msRequestFullscreen();
         }
     }
-
-    /**
-     * Handles the fullscreen change event (user exiting fullscreen).
-     */
     function handleFullscreenChange() {
         if (!document.fullscreenElement && isQuizActive) {
-            // User exited fullscreen while the quiz was active (Termination)
-            stopTimer(); // Stop the timer
+            stopTimer();
             isQuizActive = false;
             quizContainer.style.display = 'none';
             fullscreenPrompt.style.display = 'block';
             startBtn.textContent = 'Quiz Terminated (Click to Restart)';
-            startBtn.onclick = () => {
-                location.reload(); // Reset state and force restart
-            };
+            startBtn.onclick = () => location.reload();
             document.querySelector('.prompt-title').textContent = 'QUIZ TERMINATED';
             document.querySelector('.prompt-message').textContent = 'You must remain in full-screen mode to continue the exam. Please restart the quiz.';
         } else if (document.fullscreenElement && !isQuizActive) {
-            // Entered fullscreen, start the quiz
             isQuizActive = true;
             fullscreenPrompt.style.display = 'none';
             quizContainer.style.display = 'block';
             renderQuestion();
-            startTimer(); // Start the timer!
+            startTimer();
         }
     }
-    
-    // Listen for fullscreen change events
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
     document.addEventListener('msfullscreenchange', handleFullscreenChange);
-
-    // Initial start button listener
-    startBtn.addEventListener('click', () => {
-        requestFullscreen();
-    });
-    
-    // Initialize timer display
+    startBtn.addEventListener('click', () => requestFullscreen());
     document.addEventListener('DOMContentLoaded', updateTimerDisplay);
 
-
     // --- Quiz Navigation and Interaction Functions ---
-
-    /**
-     * Helper function to escape HTML characters for safe display.
-     * यह फ़ंक्शन ऑप्शंस में मौजूद HTML टैग्स को सादे टेक्स्ट (plain text) के रूप में प्रदर्शित करने के लिए
-     * HTML स्पेशल कैरेक्टर्स (जैसे '<' और '>') को एस्केप करता है।
-     * @param {string} str - HTML कोड वाला स्ट्रिंग।
-     * @returns {string} एस्केप किया गया स्ट्रिंग।
-     */
     function escapeHtml(str) {
         if (typeof str !== 'string') return str;
         return str.replace(/&/g, "&amp;")
@@ -1065,59 +1015,32 @@
                   .replace(/"/g, "&quot;")
                   .replace(/'/g, "&#039;");
     }
-
-    /**
-     * Helper function to safely encode a string for use within an HTML attribute (like 'value').
-     * यह फ़ंक्शन विशेष रूप से डबल कोट्स को एस्केप करता है, जिससे 'value' एट्रीब्यूट टूटता नहीं है।
-     * @param {string} str - The string to encode.
-     * @returns {string} The attribute-safe string.
-     */
     function escapeHtmlAttribute(str) {
         if (typeof str !== 'string') return str;
-        // Double quotes are replaced with entity to prevent breaking the value="${...}" structure.
         return str.replace(/"/g, "&quot;");
     }
-
-
-    /**
-     * Renders the current question and its options to the DOM.
-     */
     function renderQuestion() {
         if (currentQuestionIndex >= questions.length) {
             submitQuiz();
             return;
         }
-
         const q = questions[currentQuestionIndex];
-        
-        // Update header
         questionHeader.textContent = `Question ${currentQuestionIndex + 1}/${questions.length}`;
-
-        // Build question HTML
-        let html = `<p class="question-text">Q${currentQuestionIndex + 1}. ${q.question}</p>`;
-        
+        // Use escapeHtml for both question and options so HTML tags show as text, not as rendered HTML
+        let html = `<p class="question-text">Q${currentQuestionIndex + 1}. ${escapeHtml(q.question)}</p>`;
         q.options.forEach((option, index) => {
             const isChecked = userAnswers[currentQuestionIndex] === option;
-            // Display के लिए HTML टैग्स को एस्केप करें
-            const escapedOptionDisplay = escapeHtml(option); 
-            // Input value के लिए, केवल कोट्स को एस्केप करें ताकि JavaScript में सही वैल्यू मिले
+            const escapedOptionDisplay = escapeHtml(option);
             const safeOptionValue = escapeHtmlAttribute(option);
-
             html += `
                 <div>
-                    <!-- value में safeOptionValue का उपयोग करें -->
                     <input type="radio" id="option-${index}" name="quiz-option" value="${safeOptionValue}" ${isChecked ? 'checked' : ''} onchange="enableNextButton()">
                     <label for="option-${index}" class="option-label">${escapedOptionDisplay}</label>
                 </div>
             `;
         });
-
         questionArea.innerHTML = html;
-
-        // Check if the current question has an existing answer to enable the button immediately
         nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
-
-        // Show Finish button on the last question, hide next
         if (currentQuestionIndex === questions.length - 1) {
             nextBtn.style.display = 'none';
             finishBtn.style.display = 'block';
@@ -1126,131 +1049,75 @@
             finishBtn.style.display = 'none';
         }
     }
-
-    /**
-     * Enables the Save & Next button when an option is selected.
-     */
     function enableNextButton() {
         nextBtn.disabled = false;
     }
-
-    /**
-     * Resets the selected option for the current question.
-     */
     function resetSelection() {
         const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
-        
         if (selectedOption) {
             selectedOption.checked = false;
-            userAnswers[currentQuestionIndex] = null; // Clear state
-            nextBtn.disabled = true; // Disable until a new selection is made
+            userAnswers[currentQuestionIndex] = null;
+            nextBtn.disabled = true;
         }
     }
-
-    /**
-     * Saves the current selection and moves to the next question.
-     */
     function saveAndGoNext() {
-        // 1. Save the selected answer
         const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
         if (selectedOption) {
-            // Note: Since we used escapeHtmlAttribute in renderQuestion, 
-            // selectedOption.value will correctly return the unescaped string (the raw answer).
             userAnswers[currentQuestionIndex] = selectedOption.value;
         } else {
-            console.error("No option selected, cannot proceed.");
             return;
         }
-
-        // 2. Move to the next question
         currentQuestionIndex++;
-        
         if (currentQuestionIndex < questions.length) {
             renderQuestion();
         } else {
-            // 3. If no more questions, submit the quiz
             submitQuiz(false);
         }
     }
-
-    /**
-     * Helper function to save the last question's answer before final submission
-     */
     function saveCurrentAnswerForSubmit() {
         const selectedOption = document.querySelector('input[name="quiz-option"]:checked');
         if (selectedOption) {
             userAnswers[currentQuestionIndex] = selectedOption.value;
         } else if (currentQuestionIndex === questions.length - 1) {
-             // If on the last question and nothing is checked, set to null
-            userAnswers[currentQuestionIndex] = null; 
+            userAnswers[currentQuestionIndex] = null;
         }
     }
-
-
-    /**
-     * Calculates score, displays results, and shows review.
-     */
     function submitQuiz(isTimeout) {
-        stopTimer(); // Stop the timer immediately
-
-        // Ensure the last question's answer is saved
+        stopTimer();
         saveCurrentAnswerForSubmit();
-        
-        // Hide quiz and show results screen
         quizContainer.style.display = 'none';
         resultsScreen.style.display = 'block';
-        
-        // Set the appropriate title based on submission type
         if (isTimeout) {
             resultsTitle.textContent = 'TIME OUT: Exam Submitted Automatically';
             resultsTitle.style.color = 'var(--wrong-color)';
         } else {
-            // Set the title for successful completion
             resultsTitle.textContent = 'Quiz Completed Successfully';
             resultsTitle.style.color = 'var(--primary-color)';
         }
-
-        // Calculate Score
         let score = 0;
         questions.forEach((q, index) => {
             if (userAnswers[index] === q.answer) {
                 score++;
             }
         });
-
-        // Display Score
         finalScore.textContent = score;
         totalQuestions.textContent = questions.length;
-
-        // Display Review
         renderReview(score);
-
-        // Exit fullscreen after showing results
         if (!isTimeout && document.exitFullscreen) {
             document.exitFullscreen();
         }
     }
-    
-    /**
-     * Generates the detailed review section.
-     */
     function renderReview(score) {
         let reviewHtml = '';
-
         questions.forEach((q, index) => {
             const userAnswer = userAnswers[index];
             const isCorrect = userAnswer === q.answer;
-            const userAnswerText = userAnswer !== null ? `Your Answer: ${userAnswer}` : 'Your Answer: Not Attempted';
             const userAnswerClass = isCorrect ? '' : (userAnswer === null ? 'none' : 'user-answer');
-
-            // Answer review में भी escaping का उपयोग करें
             const escapedCorrectAnswer = escapeHtml(q.answer);
             const escapedUserAnswerText = userAnswer !== null ? `Your Answer: ${escapeHtml(userAnswer)}` : 'Your Answer: Not Attempted';
-
-
             reviewHtml += `
                 <div class="review-question-block">
-                    <p class="review-question-text">Q${index + 1}. ${q.question}</p>
+                    <p class="review-question-text">Q${index + 1}. ${escapeHtml(q.question)}</p>
                     <div class="review-info">
                         <p class="correct-answer">Correct Answer: ${escapedCorrectAnswer}</p>
                         <p class="${userAnswerClass}">${escapedUserAnswerText}</p>
@@ -1258,9 +1125,9 @@
                 </div>
             `;
         });
-
         reviewArea.innerHTML = reviewHtml;
     }
+
 </script>
 
 </body>
