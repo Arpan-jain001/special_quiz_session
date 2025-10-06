@@ -469,7 +469,457 @@
             question: "Which meta tag is important for responsiveness?",
             options: ["<meta charset>", "<meta name=\"viewport\">", "<meta author>", "<meta description>"],
             answer: "<meta name=\"viewport\">"
-        }
+        },
+        {
+        "question": "What will be displayed in the browser? <p>Hello <span style=\"display:none;\">World</span></p>",
+        "options": ["Hello World", "Hello", "World", "Nothing"],
+        "answer": "Hello"
+    },
+    {
+        "question": "Which HTML element is correct for linking an external stylesheet? ? rel=\"stylesheet\" href=\"style.css\">",
+        "options": ["<link>", "<style>", "<script>", "<meta>"],
+        "answer": "<link>"
+    },
+    {
+        "question": "What is the output? <h1>Title</h1> <h2>Title</h2>",
+        "options": ["Both same size text", "h1 larger than h2", "h2 larger than h1", "Error"],
+        "answer": "h1 larger than h2"
+    },
+    {
+        "question": "What is the background color of the paragraph? <p style=\"background-color: rgba(255,0,0,0.5);\">Hello</p>",
+        "options": ["Red transparent", "Solid red", "White", "No color"],
+        "answer": "Red transparent"
+    },
+    {
+        "question": "What will happen? <a href=\"https://example.com\" target=\"_blank\">Click</a>",
+        "options": ["Opens in same tab", "Opens in new tab", "Shows error", "Opens in popup"],
+        "answer": "Opens in new tab"
+    },
+    {
+        "question": "Which tag makes text italic? ? This is italic ?",
+        "options": ["<i> </i>", "<em> </em>", "<italics> </italics>", "Both a & b"],
+        "answer": "Both a & b"
+    },
+    {
+        "question": "What is the correct way to add inline CSS? <p ?=\"color:red;\">Hello</p>",
+        "options": ["css", "style", "font", "inline"],
+        "answer": "style"
+    },
+    {
+        "question": "What will this code display? <img src=\"wrong.jpg\" alt=\"Image not found\">",
+        "options": ["Nothing", "Broken image icon", "Image not found", "Error"],
+        "answer": "Broken image icon"
+    },
+    {
+        "question": "Which selector selects all <p> inside <div>? ? { color: blue; }",
+        "options": ["div + p", "div > p", "div p", "p div"],
+        "answer": "div p"
+    },
+    {
+        "question": "What does this CSS rule do? p:first-child { color: green; }",
+        "options": ["All p tags green", "First p inside parent green", "First line green", "Error"],
+        "answer": "First p inside parent green"
+    },
+    {
+        "question": "What is the margin of the box? div { margin: 10px 20px; }",
+        "options": ["Top/Bottom 20, Left/Right 10", "Top/Bottom 10, Left/Right 20", "All 10", "All 20"],
+        "answer": "Top/Bottom 10, Left/Right 20"
+    },
+    {
+        "question": "What will be displayed? <p>&lt;Hello&gt;</p>",
+        "options": ["<Hello>", "Hello", "Error", "Nothing"],
+        "answer": "<Hello>"
+    },
+    {
+        "question": "Which property makes text bold in CSS?",
+        "options": ["font-weight", "text-style", "bold", "font-bold"],
+        "answer": "font-weight"
+    },
+    {
+        "question": "What does this do? div { position: absolute; top: 10px; left: 20px; }",
+        "options": ["Relative positioning", "Fixed in place", "Moves div 10px down, 20px right", "Stays at default"],
+        "answer": "Moves div 10px down, 20px right"
+    },
+    {
+        "question": "What is the grid column span of the item? .item { grid-column: 1 / span 2; }",
+        "options": ["1 column", "2 columns", "3 columns", "Error"],
+        "answer": "2 columns"
+    },
+    {
+        "question": "What happens here? <input type=\"checkbox\" checked>",
+        "options": ["Box unchecked", "Box checked", "Error", "No display"],
+        "answer": "Box checked"
+    },
+    {
+        "question": "Which CSS rule applies hover effect?",
+        "options": ["a:hover", "a:focus", "a:active", "a:visited"],
+        "answer": "a:hover"
+    },
+    {
+        "question": "What will flexbox do? .container { display: flex; justify-content: space-between; }",
+        "options": ["All items overlap", "Items spread evenly with space between", "Items aligned left", "Error"],
+        "answer": "Items spread evenly with space between"
+    },
+    {
+        "question": "Which CSS unit is relative to parent font size?",
+        "options": ["px", "em", "%", "vh"],
+        "answer": "em"
+    },
+    {
+        "question": "What is the output? <ul> <li>One</li> <li>Two</li> </ul>",
+        "options": ["One Two", "- One - Two", "1. One 2. Two", "Error"],
+        "answer": "- One - Two"
+    },
+    {
+        "question": "Which tag is semantic?",
+        "options": ["<div>", "<section>", "<span>", "<b>"],
+        "answer": "<section>"
+    },
+    {
+        "question": "What happens here? <form> <input type=\"text\" value=\"Hello\"> </form>",
+        "options": ["Empty box", "Box with Hello", "Error", "Placeholder Hello"],
+        "answer": "Box with Hello"
+    },
+    {
+        "question": "Which CSS makes animation?",
+        "options": ["@animation", "@keyframes", "transform", "transition"],
+        "answer": "@keyframes"
+    },
+    {
+        "question": "What does this do? div { transform: rotate(45deg); }",
+        "options": ["Rotates text", "Rotates div box 45 degrees", "No effect", "Error"],
+        "answer": "Rotates div box 45 degrees"
+    },
+    {
+        "question": "Which framework is CSS based?",
+        "options": ["Django", "Flask", "Bootstrap", "React"],
+        "answer": "Bootstrap"
+    },
+    {
+        "question": "Which tag creates a table row?",
+        "options": ["<tr>", "<td>", "<th>", "<table-row>"],
+        "answer": "<tr>"
+    },
+    {
+        "question": "What does z-index do?",
+        "options": ["Moves item left-right", "Moves item front-back", "Rotates item", "No effect"],
+        "answer": "Moves item front-back"
+    },
+    {
+        "question": "Which input type hides characters as you type?",
+        "options": ["text", "password", "hidden", "secure"],
+        "answer": "password"
+    },
+    {
+        "question": "What does this snippet show? <a href=\"#section2\">Go Down</a>",
+        "options": ["Opens another page", "Scrolls to section2", "Error", "Does nothing"],
+        "answer": "Scrolls to section2"
+    },
+    {
+        "question": "Which CSS property sets spacing between letters?",
+        "options": ["word-spacing", "letter-spacing", "spacing", "text-indent"],
+        "answer": "letter-spacing"
+    },
+    {
+        "question": "Which protocol is used for web communication?",
+        "options": ["HTTP/HTTPS", "FTP", "SMTP", "SSH"],
+        "answer": "HTTP/HTTPS"
+    },
+    {
+        "question": "Which HTML tag is used for inserting a line break?",
+        "options": ["<p>", "<br>", "<line>", "<break>"],
+        "answer": "<br>"
+    },
+    {
+        "question": "Which attribute specifies the URL in an anchor tag?",
+        "options": ["href", "link", "url", "src"],
+        "answer": "href"
+    },
+    {
+        "question": "<em> in HTML means:",
+        "options": ["Italics (semantic emphasis)", "Bold text", "Small text", "Highlight text"],
+        "answer": "Italics (semantic emphasis)"
+    },
+    {
+        "question": "Which CSS property changes the background color?",
+        "options": ["bg-color", "color", "background-color", "bgcolor"],
+        "answer": "background-color"
+    },
+    {
+        "question": "The difference between inline and block elements is:",
+        "options": ["Inline takes full width", "Block flows inside text", "Block starts on new line", "Both are same"],
+        "answer": "Block starts on new line"
+    },
+    {
+        "question": "CSS unit % is relative to:",
+        "options": ["Screen width", "Parent element", "Root font size", "Absolute pixels"],
+        "answer": "Parent element"
+    },
+    {
+        "question": "Which of the following is NOT semantic HTML?",
+        "options": ["<header>", "<footer>", "<div>", "<article>"],
+        "answer": "<div>"
+    },
+    {
+        "question": "Which CSS property controls text size?",
+        "options": ["font-weight", "text-size", "font-size", "size"],
+        "answer": "font-size"
+    },
+    {
+        "question": "Which CSS property is used for shadow effects?",
+        "options": ["text-decoration", "box-shadow", "outline", "filter"],
+        "answer": "box-shadow"
+    },
+    {
+        "question": "CSS Flexbox axis direction is controlled by:",
+        "options": ["flex-direction", "justify-content", "align-items", "order"],
+        "answer": "flex-direction"
+    },
+    {
+        "question": "In CSS Grid, which property merges cells?",
+        "options": ["grid-span", "grid-column", "column-span", "row-span"],
+        "answer": "grid-column"
+    },
+    {
+        "question": "CSS transition requires:",
+        "options": ["Only transition-property", "Transition-property + transition-duration", "Only transition-duration", "Only transform"],
+        "answer": "Transition-property + transition-duration"
+    },
+    {
+        "question": "Which CSS framework is mobile-first?",
+        "options": ["Bootstrap", "Tailwind", "Foundation", "All of the above"],
+        "answer": "All of the above"
+    },
+    {
+        "question": "Which tag is used for ordered lists?",
+        "options": ["<ul>", "<ol>", "<li>", "<list>"],
+        "answer": "<ol>"
+    },
+    {
+        "question": "Which tag is used to group block-level content?",
+        "options": ["<group>", "<span>", "<div>", "<section>"],
+        "answer": "<div>"
+    },
+    {
+        "question": "CSS property to fix element at screen bottom:",
+        "options": ["position: relative; bottom: 0;", "position: absolute; bottom: 0;", "position: fixed; bottom: 0;", "float: bottom;"],
+        "answer": "position: fixed; bottom: 0;"
+    },
+    {
+        "question": "Which CSS property increases spacing between characters?",
+        "options": ["letter-spacing", "word-spacing", "line-height", "text-indent"],
+        "answer": "letter-spacing"
+    },
+    {
+        "question": "Which HTML tag is used for inline code snippets?",
+        "options": ["<pre>", "<code>", "<kbd>", "<tt>"],
+        "answer": "<code>"
+    },
+    {
+        "question": "CSS Grid property to control spacing between cells:",
+        "options": ["margin", "gap", "padding", "grid-spacing"],
+        "answer": "gap"
+    },
+    {
+        "question": "What is the default HTML doctype for modern browsers?",
+        "options": ["<!DOCTYPE html>", "<!DOCTYPE HTML5>", "<!DOCTYPE>", "<!HTML>"],
+        "answer": "<!DOCTYPE html>"
+    },
+    {
+        "question": "CSS animation timing is controlled by:",
+        "options": ["animation-speed", "animation-duration", "animation-delay", "keyframes"],
+        "answer": "animation-duration"
+    },
+    {
+        "question": "Which CSS property changes cursor style?",
+        "options": ["mouse-style", "pointer", "cursor", "hand"],
+        "answer": "cursor"
+    },
+    {
+        "question": "Which tag is used for main navigation in semantic HTML?",
+        "options": ["<menu>", "<nav>", "<ul>", "<header>"],
+        "answer": "<nav>"
+    },
+    {
+        "question": "Which HTML tag is used for responsive image handling?",
+        "options": ["<img>", "<picture>", "<image>", "<source>"],
+        "answer": "<picture>"
+    },
+    {
+        "question": "Which meta tag is used for SEO keywords?",
+        "options": ["<meta description>", "<meta name=\"keywords\">", "<meta viewport>", "<meta author>"],
+        "answer": "<meta name=\"keywords\">"
+    },
+    {
+        "question": "Which CSS layout is best for aligning items vertically?",
+        "options": ["Float", "Flexbox", "Grid", "Inline-block"],
+        "answer": "Flexbox"
+    },
+    {
+        "question": "Which CSS property hides an element but keeps its space?",
+        "options": ["display: none;", "opacity: 0;", "visibility: hidden;", "overflow: hidden;"],
+        "answer": "visibility: hidden;"
+    },
+    {
+        "question": "Which HTML tag is used for form input?",
+        "options": ["<textbox>", "<form>", "<input>", "<field>"],
+        "answer": "<input>"
+    },
+    {
+        "question": "Which CSS property controls overflow content?",
+        "options": ["visible", "overflow", "hidden", "display"],
+        "answer": "overflow"
+    },
+    {
+        "question": "Which of these is NOT a web development role?",
+        "options": ["Frontend Developer", "Backend Developer", "Cloud Engineer", "UI Designer"],
+        "answer": "Cloud Engineer"
+    },
+    {
+        "question": "Which HTML element is used to collect user input?",
+        "options": ["<form>", "<input>", "<data>", "<collect>"],
+        "answer": "<input>"
+    },
+    {
+        "question": "Which attribute is used to specify image path?",
+        "options": ["href", "src", "alt", "path"],
+        "answer": "src"
+    },
+    {
+        "question": "Which tag is used for bold text in semantic HTML5?",
+        "options": ["<strong>", "<b>", "<em>", "<i>"],
+        "answer": "<strong>"
+    },
+    {
+        "question": "CSS external stylesheets use which tag?",
+        "options": ["<style>", "<link>", "<css>", "<import>"],
+        "answer": "<link>"
+    },
+    {
+        "question": "Which CSS selector targets all <p> inside <div>?",
+        "options": ["div p", "div.p", "p.div", "div+p"],
+        "answer": "div p"
+    },
+    {
+        "question": "CSS property to align text center?",
+        "options": ["text-center", "align-text", "text-align", "margin"],
+        "answer": "text-align"
+    },
+    {
+        "question": "Which is NOT a CSS unit?",
+        "options": ["em", "px", "cm", "int"],
+        "answer": "int"
+    },
+    {
+        "question": "HTML <table> tag needs:",
+        "options": ["<row>", "<td>", "<tr>", "Both <tr> and <td>"],
+        "answer": "Both <tr> and <td>"
+    },
+    {
+        "question": "Which HTML tag creates a dropdown?",
+        "options": ["<input type=\"dropdown\">", "<select>", "<list>", "<menu>"],
+        "answer": "<select>"
+    },
+    {
+        "question": "Which CSS property adds space inside border?",
+        "options": ["margin", "border-spacing", "padding", "gap"],
+        "answer": "padding"
+    },
+    {
+        "question": "Which flexbox property allows wrapping?",
+        "options": ["flex-wrap", "wrap", "align-wrap", "flex-flow"],
+        "answer": "flex-wrap"
+    },
+    {
+        "question": "Which grid property defines row height?",
+        "options": ["grid-template-rows", "grid-template-columns", "row-gap", "grid-row"],
+        "answer": "grid-template-rows"
+    },
+    {
+        "question": "CSS @keyframes requires:",
+        "options": ["start-end only", "0% to 100% stages", "frames per second", "duration only"],
+        "answer": "0% to 100% stages"
+    },
+    {
+        "question": "Which HTML element is used for captions in tables?",
+        "options": ["<title>", "<caption>", "<thead>", "<summary>"],
+        "answer": "<caption>"
+    },
+    {
+        "question": "Which CSS property makes element float left or right?",
+        "options": ["display", "position", "float", "align"],
+        "answer": "float"
+    },
+    {
+        "question": "Which CSS property hides scrollbars?",
+        "options": ["display: none;", "overflow: hidden;", "visibility: hidden;", "scrollbar: none;"],
+        "answer": "overflow: hidden;"
+    },
+    {
+        "question": "Which HTML tag defines a section of navigation links?",
+        "options": ["<menu>", "<nav>", "<aside>", "<header>"],
+        "answer": "<nav>"
+    },
+    {
+        "question": "Which CSS framework uses grid system (12 columns)?",
+        "options": ["Bootstrap", "Tailwind", "Foundation", "Materialize"],
+        "answer": "Bootstrap"
+    },
+    {
+        "question": "Which CSS property controls text boldness?",
+        "options": ["font-style", "font-weight", "bold", "style"],
+        "answer": "font-weight"
+    },
+    {
+        "question": "HTML <video> tag requires which attribute?",
+        "options": ["src", "autoplay", "controls", "All of the above"],
+        "answer": "All of the above"
+    },
+    {
+        "question": "Which CSS pseudo-class applies when user hovers?",
+        "options": ["a:hover", "a:focus", "a:visited", "a:active"],
+        "answer": "a:hover"
+    },
+    {
+        "question": "Which CSS property sets background image?",
+        "options": ["bg-image", "background-image", "image-url", "background-src"],
+        "answer": "background-image"
+    },
+    {
+        "question": "Which HTML element defines the document’s title?",
+        "options": ["<head>", "<title>", "<h1>", "<meta>"],
+        "answer": "<title>"
+    },
+    {
+        "question": "CSS media queries use which keyword?",
+        "options": ["@media", "@query", "if-screen", "screen-query"],
+        "answer": "@media"
+    },
+    {
+        "question": "Which tag is used for side content?",
+        "options": ["<aside>", "<section>", "<div>", "<extra>"],
+        "answer": "<aside>"
+    },
+    {
+        "question": "Which HTML element is used for inline quotations?",
+        "options": ["<quote>", "<q>", "<blockquote>", "<em>"],
+        "answer": "<q>"
+    },
+    {
+        "question": "Which CSS property creates rounded corners?",
+        "options": ["border-style", "border-radius", "border-corner", "corner-radius"],
+        "answer": "border-radius"
+    },
+    {
+        "question": "Which HTML attribute makes input mandatory?",
+        "options": ["require", "required", "must", "validate"],
+        "answer": "required"
+    },
+    {
+        "question": "Which HTML tag represents footer information?",
+        "options": ["<footer>", "<bottom>", "<end>", "<section>"],
+        "answer": "<footer>"
+    }
     ];
 
     // --- State Variables ---
